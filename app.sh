@@ -100,4 +100,8 @@ adoptar_mascota(){
   fi
 }
 
+porcentaje_adopcion(){
+  
+}
+
 adoptar_mascota
