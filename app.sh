@@ -101,50 +101,94 @@ adoptar_mascota(){
 }
 
 estadisticas_adopcion() {
-  # Contadores para estadísticas
-  declare -A total_por_tipo
-  declare -A adopciones_por_mes
-  total_adopciones=0
-  suma_edades=0
+  total_adoptadas=0
+  tipos_mascotas=()
+  cantidades_adoptadas=()
 
-  # Leer el archivo de adopciones y procesar los datos
-  while IFS=' - ' read -r id tipo dueño sexo edad descripcion fecha_nacimiento fecha_adopcion; do
-    # Contar adopciones por tipo de mascota
-    ((total_por_tipo["$tipo"]++))
+  while IFS=" - " read -r id_mascota tipo_mascota nombre_mascota sexo_mascota edad_mascota descripcion_mascota fecha_mascota fecha_adopcion; do
+    total_adoptadas=$((total_adoptadas + 1))
+    
+    encontrado=0
+    for i in "${!tipos_mascotas[@]}"; do
+      if [[ "${tipos_mascotas[$i]}" == "$tipo_mascota" ]]; then
+        cantidades_adoptadas[$i]=$((cantidades_adoptadas[$i] + 1))
+        encontrado=1
+        break
+      fi
+    done
 
-    # Extraer el mes de la fecha de adopción
-    mes_adopcion=$(echo "$fecha_adopcion" | cut -d'/' -f2)
-    ((adopciones_por_mes["$mes_adopcion"]++))
+    if [[ $encontrado -eq 0 ]]; then
+      tipos_mascotas+=("$tipo_mascota")
+      cantidades_adoptadas+=(1)
+    fi
+  done < adopciones.txt
 
-    # Sumar edades para calcular el promedio
-    suma_edades=$((suma_edades + edad))
-    ((total_adopciones++))
-  done < mascotas_adoptadas.txt
-
-  # Mostrar porcentaje de adopción por tipo
-  echo "Porcentaje de adopción por tipo de mascota:"
-  for tipo in "${!total_por_tipo[@]}"; do
-    adoptadas=${total_por_tipo["$tipo"]}
-    porcentaje=$(echo "scale=2; ($adoptadas / $total_adopciones) * 100" | bc -l)
-    echo "Tipo: $tipo - Adoptadas: $adoptadas (${porcentaje}%)"
-  done
-
-  # Determinar el mes con más adopciones
-  mes_max_adopciones=$(printf "%s\n" "${!adopciones_por_mes[@]}" | sort -nr | head -n 1)
-  max_adopciones=${adopciones_por_mes["$mes_max_adopciones"]}
-  echo "El mes con más adopciones es: $mes_max_adopciones con $max_adopciones adopciones."
-
-  # Calcular la edad promedio de los animales adoptados
-  if [[ $total_adopciones -gt 0 ]]; then
-    edad_promedio=$(echo "scale=2; $suma_edades / $total_adopciones" | bc -l)
-    echo "La edad promedio de los animales adoptados es: ${edad_promedio} años."
-  else
-    echo "No hay adopciones registradas."
+  if [[ $total_adoptadas -eq 0 ]]; then
+    echo "No hay mascotas adoptadas."
+    return
   fi
+
+  echo "Estadísticas de adopción:"
+  echo "Total de mascotas adoptadas: $total_adoptadas"
+  
+  for i in "${!tipos_mascotas[@]}"; do
+    porcentaje=$(( cantidades_adoptadas[$i] * 100 / total_adoptadas ))
+    echo "${tipos_mascotas[$i]}: ${cantidades_adoptadas[$i]} adoptadas ($porcentaje%)"
+  done
 }
 
-# Llamar a la función de estadísticas
-estadisticas_adopcion
+mes_mas_adopciones() {
+  
+  total_adopciones=0
+  meses=()
+  cantidad_adopciones_por_mes=()
+
+  
+  while IFS=" - " read -r id_mascota tipo_mascota nombre_mascota sexo_mascota edad_mascota descripcion_mascota fecha_mascota fecha_adopcion; do
+    # Extraer el mes de la fecha de adopción (formato esperado: día/mes/año)
+    mes_adopcion=$(echo "$fecha_adopcion" | cut -d '/' -f 2)
+
+    # Contar el número total de adopciones
+    total_adopciones=$((total_adopciones + 1))
+
+    # Ver si el mes ya está en la lista
+    encontrado=0
+    for i in "${!meses[@]}"; do
+      if [[ "${meses[$i]}" == "$mes_adopcion" ]]; then
+        cantidad_adopciones_por_mes[$i]=$((cantidad_adopciones_por_mes[$i] + 1))
+        encontrado=1
+        break
+      fi
+    done
+
+    # Si no se encontró el mes, agregarlo a la lista
+    if [[ $encontrado -eq 0 ]]; then
+      meses+=("$mes_adopcion")
+      cantidad_adopciones_por_mes+=(1)
+    fi
+  done < adopciones.txt
+
+  # Verificar si hay adopciones
+  if [[ $total_adopciones -eq 0 ]]; then
+    echo "No hay adopciones registradas."
+    return
+  fi
+
+  # Encontrar el mes con más adopciones
+  max_adopciones=0
+  mes_con_mas_adopciones=""
+  
+  for i in "${!meses[@]}"; do
+    if [[ ${cantidad_adopciones_por_mes[$i]} -gt $max_adopciones ]]; then
+      max_adopciones=${cantidad_adopciones_por_mes[$i]}
+      mes_con_mas_adopciones=${meses[$i]}
+    fi
+  done
+
+  echo "El mes con más adopciones es: $mes_con_mas_adopciones con $max_adopciones adopciones."
+}
 
 
-adoptar_mascota
+
+mes_mas_adopciones
+

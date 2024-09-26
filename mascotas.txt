@@ -1,0 +1,2 @@
+1 - perro - Juan - macho - 11 - perro grande - 12/12/2024
+2 - gato - Pedro - hembra - 5 - gato pequeño - 13/12/2024

@@ -1,5 +1,6 @@
-2 - perro - juan - macho - 11 - perro grande - 12/12/2024 - 5/09/2024
-1 - perro - juan - macho - 11 - perro grande - 12/12/2024 - 6/09/2024
-3 - perro - juan - macho - 11 - perro grande - 12/12/2024 - 26/09/2024
-4 - gato - juan - macho - 11 - perro grande - 12/12/2024 - 26/09/2024
-5 - loro - juan - macho - 11 - perro grande - 12/12/2024 - 26/09/2024
+2 - perro - juan - macho - 11 - perro grande - 12/09/2024 - 5/09/2024
+1 - perro - juan - macho - 11 - perro grande - 12/10/2024 - 6/09/2024
+3 - perro - juan - macho - 11 - perro grande - 12/10/2024 - 26/02/2024
+4 - gato - juan - macho - 11 - perro grande - 12/12/2024 - 26/03/2024
+5 - loro - juan - macho - 11 - perro grande - 12/10/2024 - 26/08/2024
+6 - sangijuela - juan - macho - 11 - perro grande - 12/12/2024 - 26/10/2024
