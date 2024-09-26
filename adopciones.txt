@@ -1,0 +1,4 @@
+ - 
+2 - perro - juan - macho - 11 - perro grande - 12/12/2024 - 
+1 - perro - juan - macho - 11 - perro grande - 12/12/2024 - Thu Sep 26 16:32:27 -03 2024
+3 - perro - juan - macho - 11 - perro grande - 12/12/2024 - 26/09/2024
