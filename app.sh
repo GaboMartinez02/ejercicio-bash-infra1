@@ -88,6 +88,10 @@ adoptar_mascota(){
   read -p "Introduce el numero identificador de la mascota a adoptar: " id_mascota
   
   if grep -q "^$id_mascota -" "mascotas.txt"; then
+      mascota_info=$(grep "^$id_mascota -" mascotas.text)
+      fecha_actual=$(date + "%d/$m/%Y")
+      echo "$mascota_info - $fecha_actual" >> adopciones.txt
+
       sed "/^$id_mascota - /d" mascotas.txt > mascotas_temp.txt
       mv mascotas_temp.txt mascotas.txt
       echo "La mascota con ID $id_mascota ha sido adoptada y eliminada del sistema."
@@ -96,3 +100,4 @@ adoptar_mascota(){
   fi
 }
 
+adoptar_mascota
