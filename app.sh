@@ -100,8 +100,51 @@ adoptar_mascota(){
   fi
 }
 
-porcentaje_adopcion(){
-  
+estadisticas_adopcion() {
+  # Contadores para estadísticas
+  declare -A total_por_tipo
+  declare -A adopciones_por_mes
+  total_adopciones=0
+  suma_edades=0
+
+  # Leer el archivo de adopciones y procesar los datos
+  while IFS=' - ' read -r id tipo dueño sexo edad descripcion fecha_nacimiento fecha_adopcion; do
+    # Contar adopciones por tipo de mascota
+    ((total_por_tipo["$tipo"]++))
+
+    # Extraer el mes de la fecha de adopción
+    mes_adopcion=$(echo "$fecha_adopcion" | cut -d'/' -f2)
+    ((adopciones_por_mes["$mes_adopcion"]++))
+
+    # Sumar edades para calcular el promedio
+    suma_edades=$((suma_edades + edad))
+    ((total_adopciones++))
+  done < mascotas_adoptadas.txt
+
+  # Mostrar porcentaje de adopción por tipo
+  echo "Porcentaje de adopción por tipo de mascota:"
+  for tipo in "${!total_por_tipo[@]}"; do
+    adoptadas=${total_por_tipo["$tipo"]}
+    porcentaje=$(echo "scale=2; ($adoptadas / $total_adopciones) * 100" | bc -l)
+    echo "Tipo: $tipo - Adoptadas: $adoptadas (${porcentaje}%)"
+  done
+
+  # Determinar el mes con más adopciones
+  mes_max_adopciones=$(printf "%s\n" "${!adopciones_por_mes[@]}" | sort -nr | head -n 1)
+  max_adopciones=${adopciones_por_mes["$mes_max_adopciones"]}
+  echo "El mes con más adopciones es: $mes_max_adopciones con $max_adopciones adopciones."
+
+  # Calcular la edad promedio de los animales adoptados
+  if [[ $total_adopciones -gt 0 ]]; then
+    edad_promedio=$(echo "scale=2; $suma_edades / $total_adopciones" | bc -l)
+    echo "La edad promedio de los animales adoptados es: ${edad_promedio} años."
+  else
+    echo "No hay adopciones registradas."
+  fi
 }
+
+# Llamar a la función de estadísticas
+estadisticas_adopcion
+
 
 adoptar_mascota
